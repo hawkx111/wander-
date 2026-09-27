@@ -12,7 +12,7 @@ python3 -m http.server 8000
 
 ## Waitlist signups
 
-Near the bottom of `index.html`, set `WAITLIST_ENDPOINT` to any backend that accepts a JSON `POST` with an `email` field (Formspree, Buttondown, your own API, etc.). While it's empty, the form validates emails and saves signups to the visitor's `localStorage`, which is only useful as a demo.
+Signups are sent to Formspree (`WAITLIST_ENDPOINT` near the bottom of `index.html`) and show up in the Formspree dashboard. To use a different backend, point `WAITLIST_ENDPOINT` at any service that accepts a JSON `POST` with an `email` field. If it's left empty, signups are saved only in the visitor's own browser.
 
 ## Hosting on GitHub Pages
 
