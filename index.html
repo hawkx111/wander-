@@ -103,11 +103,12 @@
       grid-template-columns: 1.1fr 0.9fr;
       gap: 48px;
       align-items: center;
-      padding: 48px 0 96px;
+      padding: 32px 0 96px;
     }
     .hero h1 {
-      font-size: clamp(42px, 6.4vw, 76px);
-      margin-bottom: 22px;
+      font-size: clamp(34px, 4.8vw, 60px);
+      margin-bottom: 18px;
+      text-wrap: balance;
     }
     .hero h1 em {
       font-style: italic;
@@ -117,7 +118,7 @@
       font-size: 20px;
       color: var(--muted);
       max-width: 34ch;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
     .note {
       font-size: 14px;
@@ -137,7 +138,25 @@
       padding: 20px;
       max-width: 460px;
     }
+    .waitlist[hidden] { display: none; }
     .field { display: grid; gap: 6px; }
+    .email-row { display: flex; gap: 8px; }
+    .email-row input { flex: 1; min-width: 0; }
+    .followup-lead { font-size: 15px; line-height: 1.5; }
+    .followup-lead strong { color: var(--sage); }
+    .followup-actions { display: flex; align-items: center; gap: 16px; }
+    .btn-link {
+      font: inherit;
+      font-size: 15px;
+      background: none;
+      border: 0;
+      padding: 6px 2px;
+      color: var(--muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+    .btn-link:hover { color: var(--ink); }
     .field label, .choice legend {
       font-size: 14px;
       font-weight: 500;
@@ -212,6 +231,7 @@
       min-height: 1.5em;
       max-width: 460px;
     }
+    .form-msg:empty { min-height: 0; margin-top: 0; }
     .form-msg.ok { color: var(--sage); font-weight: 500; }
     .form-msg.err { color: var(--terracotta-dark); }
 
@@ -282,6 +302,11 @@
       color: var(--sage);
       white-space: nowrap;
     }
+    .toggle.off {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
     .map {
       height: 110px;
       border-radius: 16px;
@@ -318,6 +343,7 @@
     .walker-info { flex: 1; min-width: 0; line-height: 1.3; }
     .walker-info b { font-size: 14px; display: block; }
     .walker-info span { font-size: 12px; color: var(--muted); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .walker-info .now { color: var(--terracotta-dark); font-weight: 500; }
     .join {
       font-size: 12px;
       font-weight: 700;
@@ -488,6 +514,7 @@
       .wrap { padding: 0 16px; }
       .hero .lede { font-size: 18px; }
       .waitlist { padding: 16px; }
+      .email-row { flex-direction: column; }
       .btn { width: 100%; padding: 14px; }
       .phone { width: 270px; }
       .phone-stage::before { width: 280px; height: 280px; }
@@ -516,26 +543,37 @@
           <h1>Someone nearby is going for a walk. <em>Come along.</em></h1>
           <p class="lede">See who's out walking nearby and tag along. No plans. No pressure. Just walk.</p>
 
-          <form class="waitlist" data-waitlist novalidate>
-            <div class="field">
-              <label for="email-hero">Email</label>
-              <input id="email-hero" type="email" name="email" placeholder="you@email.com" autocomplete="email" required />
-            </div>
-            <div class="field">
-              <label for="hood-hero">Neighbourhood <span class="opt">(optional)</span></label>
-              <input id="hood-hero" type="text" name="neighbourhood" placeholder="e.g. Indiranagar" autocomplete="address-level3" maxlength="80" />
-            </div>
-            <fieldset class="choice">
-              <legend>Would you use women-only mode? <span class="opt">(optional)</span></legend>
-              <div class="choice-opts">
-                <input type="radio" id="wo-yes-hero" name="women_only_mode" value="Yes" /><label for="wo-yes-hero">Yes</label>
-                <input type="radio" id="wo-no-hero" name="women_only_mode" value="No" /><label for="wo-no-hero">No</label>
-                <input type="radio" id="wo-maybe-hero" name="women_only_mode" value="Maybe" /><label for="wo-maybe-hero">Maybe</label>
+          <div class="signup" data-signup>
+            <form class="waitlist" data-step="email" novalidate>
+              <div class="field">
+                <label for="email-hero">Email</label>
+                <div class="email-row">
+                  <input id="email-hero" type="email" name="email" placeholder="you@email.com" autocomplete="email" required />
+                  <button class="btn" type="submit">Get early access</button>
+                </div>
               </div>
-            </fieldset>
-            <button class="btn" type="submit">Get early access</button>
-          </form>
-          <p class="form-msg" role="status" aria-live="polite"></p>
+            </form>
+            <form class="waitlist" data-step="details" novalidate hidden>
+              <p class="followup-lead"><strong>You're on the list.</strong> Two quick, optional questions help us plan the Bangalore launch.</p>
+              <div class="field">
+                <label for="hood-hero">Your neighbourhood</label>
+                <input id="hood-hero" type="text" name="neighbourhood" placeholder="e.g. Indiranagar" autocomplete="address-level3" maxlength="80" />
+              </div>
+              <fieldset class="choice">
+                <legend>Would you use women-only mode?</legend>
+                <div class="choice-opts">
+                  <input type="radio" id="wo-yes-hero" name="women_only_mode" value="Yes" /><label for="wo-yes-hero">Yes</label>
+                  <input type="radio" id="wo-no-hero" name="women_only_mode" value="No" /><label for="wo-no-hero">No</label>
+                  <input type="radio" id="wo-maybe-hero" name="women_only_mode" value="Maybe" /><label for="wo-maybe-hero">Maybe</label>
+                </div>
+              </fieldset>
+              <div class="followup-actions">
+                <button class="btn" type="submit">Send answers</button>
+                <button class="btn-link" type="button" data-skip>Skip</button>
+              </div>
+            </form>
+            <p class="form-msg" role="status" aria-live="polite"></p>
+          </div>
           <p class="note">Starting in Bangalore. We'll only email you when Wander is live near you.</p>
         </div>
 
@@ -545,22 +583,22 @@
             <div class="phone-notch"></div>
             <div class="phone-head">
               <strong>Nearby now</strong>
-              <span class="toggle">Women only</span>
+              <span class="toggle off">Women only · off</span>
             </div>
             <div class="map"></div>
             <div class="walker">
-              <div class="avatar" style="background:#d9643a">M</div>
-              <div class="walker-info"><b>Maya</b><span>River · 4 min</span></div>
+              <div class="avatar" style="background:#d9643a">P</div>
+              <div class="walker-info"><b>Priya</b><span>Cubbon Park</span><span>4 min away</span></div>
               <span class="join">Join</span>
             </div>
             <div class="walker">
-              <div class="avatar" style="background:#7f9a7a">R</div>
-              <div class="walker-info"><b>Rosa</b><span>Free · 6 min</span></div>
+              <div class="avatar" style="background:#7f9a7a">A</div>
+              <div class="walker-info"><b>Ananya</b><span>HSR Layout</span><span class="now">Heading out now</span></div>
               <span class="join">Join</span>
             </div>
             <div class="walker">
-              <div class="avatar" style="background:#c9a27a">J</div>
-              <div class="walker-info"><b>Jen</b><span>Park · 9 min</span></div>
+              <div class="avatar" style="background:#c9a27a">A</div>
+              <div class="walker-info"><b>Arjun</b><span>Lalbagh</span><span>9 min away</span></div>
               <span class="join soft">Wave</span>
             </div>
             <div class="sos-mini"><span>Tap to leave anytime</span><span>SOS</span></div>
@@ -645,26 +683,37 @@
         <div class="cta">
           <h2>Your next walk could have company.</h2>
           <p>Join the waitlist and we'll tell you when Wander reaches your neighbourhood.</p>
-          <form class="waitlist" data-waitlist novalidate>
-            <div class="field">
-              <label for="email-cta">Email</label>
-              <input id="email-cta" type="email" name="email" placeholder="you@email.com" autocomplete="email" required />
-            </div>
-            <div class="field">
-              <label for="hood-cta">Neighbourhood <span class="opt">(optional)</span></label>
-              <input id="hood-cta" type="text" name="neighbourhood" placeholder="e.g. Indiranagar" autocomplete="address-level3" maxlength="80" />
-            </div>
-            <fieldset class="choice">
-              <legend>Would you use women-only mode? <span class="opt">(optional)</span></legend>
-              <div class="choice-opts">
-                <input type="radio" id="wo-yes-cta" name="women_only_mode" value="Yes" /><label for="wo-yes-cta">Yes</label>
-                <input type="radio" id="wo-no-cta" name="women_only_mode" value="No" /><label for="wo-no-cta">No</label>
-                <input type="radio" id="wo-maybe-cta" name="women_only_mode" value="Maybe" /><label for="wo-maybe-cta">Maybe</label>
+          <div class="signup" data-signup>
+            <form class="waitlist" data-step="email" novalidate>
+              <div class="field">
+                <label for="email-cta">Email</label>
+                <div class="email-row">
+                  <input id="email-cta" type="email" name="email" placeholder="you@email.com" autocomplete="email" required />
+                  <button class="btn" type="submit">Join the waitlist</button>
+                </div>
               </div>
-            </fieldset>
-            <button class="btn" type="submit">Join the waitlist</button>
-          </form>
-          <p class="form-msg" role="status" aria-live="polite"></p>
+            </form>
+            <form class="waitlist" data-step="details" novalidate hidden>
+              <p class="followup-lead"><strong>You're on the list.</strong> Two quick, optional questions help us plan the Bangalore launch.</p>
+              <div class="field">
+                <label for="hood-cta">Your neighbourhood</label>
+                <input id="hood-cta" type="text" name="neighbourhood" placeholder="e.g. Indiranagar" autocomplete="address-level3" maxlength="80" />
+              </div>
+              <fieldset class="choice">
+                <legend>Would you use women-only mode?</legend>
+                <div class="choice-opts">
+                  <input type="radio" id="wo-yes-cta" name="women_only_mode" value="Yes" /><label for="wo-yes-cta">Yes</label>
+                  <input type="radio" id="wo-no-cta" name="women_only_mode" value="No" /><label for="wo-no-cta">No</label>
+                  <input type="radio" id="wo-maybe-cta" name="women_only_mode" value="Maybe" /><label for="wo-maybe-cta">Maybe</label>
+                </div>
+              </fieldset>
+              <div class="followup-actions">
+                <button class="btn" type="submit">Send answers</button>
+                <button class="btn-link" type="button" data-skip>Skip</button>
+              </div>
+            </form>
+            <p class="form-msg" role="status" aria-live="polite"></p>
+          </div>
         </div>
       </div>
     </section>
@@ -677,7 +726,8 @@
 
   <script>
     // Set WAITLIST_ENDPOINT to a form backend (e.g. Formspree, Buttondown, or your own API)
-    // that accepts a JSON POST with `email`, `neighbourhood` and `women_only_mode` fields.
+    // that accepts JSON POSTs: first `email`, then optionally `email` with `neighbourhood`
+    // and `women_only_mode`.
     // When empty, signups are only stored in this browser so the page still works as a demo.
     const WAITLIST_ENDPOINT = "https://formspree.io/f/xnpnogye";
 
@@ -685,59 +735,93 @@
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    document.querySelectorAll("[data-waitlist]").forEach((form) => {
-      const input = form.querySelector("input[type=email]");
-      const hood = form.querySelector("input[name=neighbourhood]");
-      const button = form.querySelector("button");
-      const msg = form.nextElementSibling;
+    async function send(data, subject) {
+      if (WAITLIST_ENDPOINT) {
+        const res = await fetch(WAITLIST_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ ...data, _subject: subject }),
+        });
+        if (!res.ok) throw new Error("Request failed");
+        return;
+      }
+      try {
+        const list = JSON.parse(localStorage.getItem("wander-waitlist") || "[]");
+        const existing = list.find((s) => s.email === data.email);
+        if (existing) Object.assign(existing, data); else list.push(data);
+        localStorage.setItem("wander-waitlist", JSON.stringify(list));
+      } catch (_) { /* storage unavailable; still show success */ }
+    }
 
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = input.value.trim();
-        msg.className = "form-msg";
+    // Step 1 sends the email on its own, so the signup is saved even if the
+    // visitor leaves. Step 2 sends the optional answers with the same email.
+    document.querySelectorAll("[data-signup]").forEach((box) => {
+      const emailForm = box.querySelector('[data-step="email"]');
+      const detailsForm = box.querySelector('[data-step="details"]');
+      const input = emailForm.querySelector("input[type=email]");
+      const hood = detailsForm.querySelector("input[name=neighbourhood]");
+      const msg = box.querySelector(".form-msg");
+      let email = "";
 
-        if (!EMAIL_RE.test(email)) {
-          msg.textContent = "That email doesn't look quite right. Mind checking it?";
-          msg.classList.add("err");
-          input.focus();
-          return;
-        }
-
-        const choice = form.querySelector("input[name=women_only_mode]:checked");
-        const signup = { email };
-        if (hood.value.trim()) signup.neighbourhood = hood.value.trim();
-        if (choice) signup.women_only_mode = choice.value;
-
-        button.disabled = true;
+      function say(text, kind) {
+        msg.className = "form-msg" + (kind ? " " + kind : "");
+        msg.textContent = text;
+      }
+      function finish() {
+        detailsForm.hidden = true;
+        say("Thanks! We'll let you know when Wander is live near you.", "ok");
+      }
+      async function busy(button, text, task) {
         const label = button.textContent;
-        button.textContent = "Adding you…";
-
-        try {
-          if (WAITLIST_ENDPOINT) {
-            const res = await fetch(WAITLIST_ENDPOINT, {
-              method: "POST",
-              headers: { "Content-Type": "application/json", Accept: "application/json" },
-              body: JSON.stringify({ ...signup, _subject: "New Wander waitlist signup" }),
-            });
-            if (!res.ok) throw new Error("Request failed");
-          } else {
-            try {
-              const list = JSON.parse(localStorage.getItem("wander-waitlist") || "[]");
-              if (!list.some((s) => s.email === email)) list.push(signup);
-              localStorage.setItem("wander-waitlist", JSON.stringify(list));
-            } catch (_) { /* storage unavailable; still show success */ }
-          }
-          form.reset();
-          msg.textContent = "You're on the list. We'll let you know when Wander is live near you.";
-          msg.classList.add("ok");
-        } catch (err) {
-          msg.textContent = "Something went wrong on our end. Please try again in a moment.";
-          msg.classList.add("err");
-        } finally {
+        button.disabled = true;
+        button.textContent = text;
+        try { await task(); } finally {
           button.disabled = false;
           button.textContent = label;
         }
+      }
+
+      emailForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const value = input.value.trim();
+        if (!EMAIL_RE.test(value)) {
+          say("That email doesn't look quite right. Mind checking it?", "err");
+          input.focus();
+          return;
+        }
+        say("");
+        await busy(emailForm.querySelector("button"), "Adding you…", async () => {
+          try {
+            await send({ email: value }, "New Wander waitlist signup");
+            email = value;
+            emailForm.hidden = true;
+            detailsForm.hidden = false;
+            hood.focus();
+          } catch (_) {
+            say("Something went wrong on our end. Please try again in a moment.", "err");
+          }
+        });
       });
+
+      detailsForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const answers = {};
+        const choice = detailsForm.querySelector("input[name=women_only_mode]:checked");
+        if (hood.value.trim()) answers.neighbourhood = hood.value.trim();
+        if (choice) answers.women_only_mode = choice.value;
+        if (!Object.keys(answers).length) return finish();
+
+        await busy(detailsForm.querySelector("button[type=submit]"), "Sending…", async () => {
+          try {
+            await send({ email, ...answers }, "Wander waitlist: follow-up answers");
+            finish();
+          } catch (_) {
+            say("Those answers didn't send. Please try again, or skip. You're already on the list.", "err");
+          }
+        });
+      });
+
+      detailsForm.querySelector("[data-skip]").addEventListener("click", finish);
     });
   </script>
 </body>

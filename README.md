@@ -12,13 +12,14 @@ python3 -m http.server 8000
 
 ## Waitlist signups
 
-Signups are sent to Formspree (`WAITLIST_ENDPOINT` near the bottom of `index.html`) and show up in the Formspree dashboard. Each submission has:
+Signups are sent to Formspree (`WAITLIST_ENDPOINT` near the bottom of `index.html`) and show up in the Formspree dashboard. Signing up takes two steps:
 
-- `email` (required)
-- `neighbourhood` (optional, free text)
-- `women_only_mode` (optional: `Yes`, `No` or `Maybe`)
+1. The visitor enters their email. It's sent right away as its own submission (subject "New Wander waitlist signup"), so the signup is kept even if they leave.
+2. A short follow-up asks two optional questions. If they answer, a second submission (subject "Wander waitlist: follow-up answers") is sent with the same `email` plus:
+   - `neighbourhood` (free text)
+   - `women_only_mode` (`Yes`, `No` or `Maybe`)
 
-Optional fields are left out when the visitor skips them. To use a different backend, point `WAITLIST_ENDPOINT` at any service that accepts a JSON `POST` with those fields. If it's left empty, signups are saved only in the visitor's own browser.
+Unanswered questions are left out, and skipping the follow-up sends nothing more. To use a different backend, point `WAITLIST_ENDPOINT` at any service that accepts a JSON `POST` with those fields. If it's left empty, signups are saved only in the visitor's own browser.
 
 ## Link previews
 
